@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1554268161 source:c:\users\liuyi\desktop\c_folder&file\main.c
+	<stdio.h>
+	<stdlib.h>
+	"Folder&File.h"
+
+1554269726 c:\users\liuyi\desktop\c_folder&file\folder&file.h
+
+1554269740 source:c:\users\liuyi\desktop\c_folder&file\folderutils.c
+	<stdio.h>
+	<stdlib.h>
+	<io.h>
+	"Folder&File.h"
+
+1554269685 source:c:\users\liuyi\desktop\c_folder&file\fileutils.c
+	<stdio.h>
+	<stdlib.h>
+	<io.h>
+	"Folder&File.h"
+
