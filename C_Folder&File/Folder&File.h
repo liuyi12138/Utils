@@ -10,6 +10,7 @@ typedef struct Folder{
 }FolderNode,*FolderList;
 
 void creartFolderLink(FolderList *L, char* dir);
+void getALlFolders(FolderList *L);
 void getFolders(FolderList *L);
 void showFolders(FolderList *L);
 
@@ -20,10 +21,12 @@ typedef struct File{
     char* dir;
     char* folder;
     char* content;
+    struct File *next;
 }FileNode,*FileList;
 
-void getFileList(char* dir, FileList *L);
+void getFileList(FileList *L, char* Folderdir);
 char* getFileContent(char* dir);
+void* showFiles(FileList *L);
 
 
 #endif // FOLDER&FILE_H_INCLUDED

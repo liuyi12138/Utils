@@ -5,8 +5,13 @@
 int main()
 {
     FolderList Folders = NULL;
-    creartFolderLink(&Folders, "w:/HUST");
-    getFolders(&Folders);
+    creartFolderLink(&Folders, "W:/HUST/ChallengeCup/stressManager/back_end/app/Http");
+    getALlFolders(&Folders);
     showFolders(&Folders);
+
+    FileList Files = NULL;
+    getFileList(&Files, "W:/HUST/ChallengeCup/stressManager");
+    showFiles(&Files);
+
     return 0;
 }
