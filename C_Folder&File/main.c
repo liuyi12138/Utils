@@ -13,5 +13,7 @@ int main()
     getFileList(&Files, "W:/HUST/ChallengeCup/stressManager");
     showFiles(&Files);
 
+    writeFile("W:/HUST/ChallengeCup/stressManager/test.txt",Files->content);
+
     return 0;
 }

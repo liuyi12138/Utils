@@ -70,7 +70,7 @@ char* getFileContent(char* dir) {
     return result;
 }
 
-void* showFiles(FileList *L) {
+void showFiles(FileList *L) {
     FileList p = *L;
     while(p){
         printf("fileName: %s,  fileSize: %d,  folder: %s,  dir: %s\n", p->fileName, p->fileSize, p->folder, p->dir);
@@ -78,4 +78,17 @@ void* showFiles(FileList *L) {
         p = p->next;
     }
     return;
+}
+
+
+void writeFile(char* fileName, char* content) {
+
+	FILE *fpWrite=fopen(fileName,"w");
+	if(fpWrite==NULL)
+	{
+		return 0;
+	}
+	fprintf(fpWrite,"%s",content);
+	fclose(fpWrite);
+
 }

@@ -26,7 +26,8 @@ typedef struct File{
 
 void getFileList(FileList *L, char* Folderdir);
 char* getFileContent(char* dir);
-void* showFiles(FileList *L);
+void showFiles(FileList *L);
+void writeFile(char* fileName, char* content);
 
 
 #endif // FOLDER&FILE_H_INCLUDED
