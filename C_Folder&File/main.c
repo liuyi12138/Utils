@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>>
 #include "Folder&File.h"
 
 int main()

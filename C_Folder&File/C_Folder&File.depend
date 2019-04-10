@@ -18,24 +18,18 @@
 	<io.h>
 	"Folder&File.h"
 
-1554616742 source:l:\github\utils\c_folder&file\fileutils.c
+1554815506 source:l:\github\utils\c_folder&file\fileutils.c
+	"Folder&File.h"
+
+1554815510 l:\github\utils\c_folder&file\folder&file.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<io.h>
+
+1554815517 source:l:\github\utils\c_folder&file\folderutils.c
 	"Folder&File.h"
 
-1554813635 l:\github\utils\c_folder&file\folder&file.h
-
-1554614267 source:l:\github\utils\c_folder&file\folderutils.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<io.h>
-	"Folder&File.h"
-
-1554616823 source:l:\github\utils\c_folder&file\main.c
-	<stdio.h>
-	<stdlib.h>
+1554815521 source:l:\github\utils\c_folder&file\main.c
 	"Folder&File.h"
 

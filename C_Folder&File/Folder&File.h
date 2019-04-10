@@ -1,6 +1,11 @@
 #ifndef FOLDER&FILE_H_INCLUDED
 #define FOLDER&FILE_H_INCLUDED
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <io.h>
+
 typedef struct Folder{
     char* folderName;
     int depth;
