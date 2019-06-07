@@ -3,15 +3,28 @@
 int main()
 {
     FolderList Folders = NULL;
-    creartFolderLink(&Folders, "W:/HUST/ChallengeCup/stressManager/back_end/app/Http");
-    getALlFolders(&Folders);
+    creartFolderLink(&Folders, "L:/github");
+    getAllFolders(&Folders);
     showFolders(&Folders);
 
     FileList Files = NULL;
-    getFileList(&Files, "W:/HUST/ChallengeCup/stressManager");
+    getFileList(&Files, "L:/github/Utils");
     showFiles(&Files);
 
-    writeFile("W:/HUST/ChallengeCup/stressManager/test.txt",Files->content);
+
+    initFile("L:/github/test.txt","222222\n");
+    clearFile("L:/github/test.txt");
+    deleteFile("L:/github/test.txt");
+
+    addToFile("L:/github/test.txt",0,"33333333");
+    addToFile("L:/github/test.txt",0,"222222222");
+    updateToFile("L:/github/test.txt",1,"11111111111");
+    removeFromFile("L:/github/test.txt",0);
+
+    char* a = getFromFile("L:/github/test.txt",1);
+    char* b = getFromFile("L:/github/test.txt",0);
+    printf("%s", a);
+    printf("%s", b);
 
     return 0;
 }

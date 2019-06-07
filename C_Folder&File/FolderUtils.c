@@ -12,7 +12,7 @@ void creartFolderLink(FolderList *L, char* dir){
     (*L) = head;
     return;
 }
-void getALlFolders(FolderList *L){
+void getAllFolders(FolderList *L){
     FolderList Folders = *L;
     while(Folders) {
         getFolders(&Folders);
@@ -45,7 +45,6 @@ void getFolders(FolderList *L){
         while(_findnext(Handle,&FileInfo)==0) {
             if (FileInfo.attrib ==48)
             {
-                //printf("%d     %s\n",FileInfo.attrib,FileInfo.name);
                 temp = (FolderNode*)malloc(sizeof(FolderNode));
                 tempDir = (char*)malloc(999 * sizeof(char));
                 tempName = (char*)malloc(256 * sizeof(char));

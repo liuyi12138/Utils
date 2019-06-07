@@ -50,7 +50,7 @@ void getFileList(FileList *L, char* Folderdir) {
 char* getFileContent(char* dir) {
     char buff[512];
     char* result;
-    result = (char*)malloc(999999 * sizeof(char));
+    result = (char*)malloc(MAXDATA * sizeof(char));
 
     FILE *fp = fopen(dir, "r");
     if(fp == NULL)
@@ -77,14 +77,148 @@ void showFiles(FileList *L) {
 }
 
 
-void writeFile(char* fileName, char* content) {
+void initFile(char* fileName, char* content) {
 
-	FILE *fpWrite=fopen(fileName,"w");
-	if(fpWrite==NULL)
+	FILE *fp =fopen(fileName,"w");
+	if(fp == NULL)
 	{
 		return 0;
 	}
-	fprintf(fpWrite,"%s",content);
-	fclose(fpWrite);
+	fprintf(fp ,"%s",content);
+	fclose(fp);
 
+}
+
+void clearFile(char* fileName) {
+    FILE *fp=fopen(fileName,"w");
+	if(fp == NULL)
+	{
+		return 0;
+	}
+	fprintf(fp,"%s","");
+	fclose(fp);
+	printf("clear success\n");
+}
+
+void deleteFile(char* fileName) {
+    if(remove(fileName) == 0 )
+        printf("delete success\n");
+    else
+        printf("delete error\n");
+
+}
+
+void addToFile(char* fileName, int row, char* content) {
+
+    char buff[512];
+    char* result;
+    int i = 1;
+    result = (char*)malloc(MAXDATA * sizeof(char));
+
+    FILE *fp = fopen(fileName, "rt+");
+    if(fp == NULL)
+    {
+        printf("failed to open \n");
+        return "";
+    }
+
+    while(fgets(buff,sizeof(buff),fp) != NULL) {
+        if(i == row){
+            strcat(result,content);
+            strcat(result,"\n");
+        }
+        strcat(result,buff);
+        ++i;
+    }
+    if(row == 0){
+        strcat(result,content);
+        strcat(result,"\n");
+    }
+    fclose(fp);
+
+    initFile(fileName,result);
+    printf("add success\n");
+}
+
+void updateToFile(char* fileName, int row, char* content) {
+    char buff[512];
+    char* result;
+    int i = 1;
+    result = (char*)malloc(MAXDATA * sizeof(char));
+
+    FILE *fp = fopen(fileName, "rt+");
+    if(fp == NULL)
+    {
+        printf("failed to open \n");
+        return "";
+    }
+
+    while(fgets(buff,sizeof(buff),fp) != NULL) {
+        if(i == row){
+            strcat(result,content);
+            strcat(result,"\n");
+        }
+        else
+            strcat(result,buff);
+        ++i;
+    }
+    fclose(fp);
+
+    initFile(fileName,result);
+    printf("update success\n");
+}
+
+void removeFromFile(char* fileName, int row) {
+    char buff[512];
+    char* result;
+    int i = 1;
+    int ch;
+    result = (char*)malloc(MAXDATA * sizeof(char));
+
+    FILE *fp = fopen(fileName, "rt+");
+    if(fp == NULL)
+    {
+        printf("failed to open \n");
+        return "";
+    }
+
+    while(fgets(buff,sizeof(buff),fp) != NULL) {
+        if (row != 0 || EOF != (ch = fgetc(fp))) {
+            if(i != row)
+                strcat(result,buff);
+            ++i;
+        }
+    }
+    fclose(fp);
+
+    initFile(fileName,result);
+    printf("remove success\n");
+}
+
+char* getFromFile(char* fileName, int row) {
+    char buff[512];
+    char* result;
+    int i = 1;
+    int ch;
+    result = (char*)malloc(512 * sizeof(char));
+
+    FILE *fp = fopen(fileName, "r");
+    if(fp == NULL)
+    {
+        printf("failed to open \n");
+        return "";
+    }
+
+    while(fgets(buff,sizeof(buff),fp) != NULL) {
+        if (row == 0 && EOF == (ch = fgetc(fp)))
+            strcpy(result,buff);
+        else if(i == row){
+            strcpy(result,buff);
+            break;
+        }
+        ++i;
+    }
+    fclose(fp);
+
+    return result;
 }
