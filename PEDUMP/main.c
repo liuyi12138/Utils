@@ -8,22 +8,21 @@ int main(int argc, char* argv[])
     int address = 0;
     int ascii[16];
     unsigned char buff[16];
-    unsigned char* result;
-    result = (char*)malloc(1024 * sizeof(char));
 
-    FILE *fpr = fopen(argv[0], "r");
+    FILE *fpr = fopen(argv[1], "r");
     FILE *fpw = fopen("report.txt","w");
 
     if(fpr == NULL || fpw == NULL)
     {
-        printf("%s failed to open \n",argv[0]);
+        printf("%s failed to open \n",argv[1]);
         return 1;
     }
 
-    printf("  ��ַ                                 �ֽ�������                                    ASCII�ַ�\n");
-    fprintf(fpw, "  ��ַ                                 �ֽ�������                                     ASCII�ַ�\n");
-    while(fgets(buff,sizeof(buff),fpr) != NULL){
-        strcat(result,buff);
+    printf("  地址                                 字节码内容                                    ASCII字符\n");
+    fprintf(fpw, "  地址                                 字节码内容                                     ASCII字符\n");
+    //while(fgets(buff,sizeof(buff),fpr) != NULL){
+    //此处应将fgets修正为fread，因为fgets每次读取完后会在字符串后补/0导致输出的文件出错，在后续PEINFO中发现了这个问题
+    while(fread(buff,1,sizeof(buff),fpr) != NULL){
         printf("%08x    ", address);
         fprintf(fpw, "%08x    ", address);
         for(int i = 0; i < 16; ++i){
