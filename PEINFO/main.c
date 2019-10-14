@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 {
     int i = 0;
     printf("File Name: %s\n",argv[1]);
-    FILE *fp = fopen(argv[1], "r");
+    FILE *fp = fopen(argv[1], "rb");
     if(fp == NULL)
     {
         printf("failed to open \n");
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     }
 
 
-    //DOSÍ·²¿·Ö
+    //DOSÍ·ï¿½ï¿½ï¿½ï¿½
     printf("====================IMAGE_DOS_HEADER====================\n");
     fread(&myDosHeader,1 ,sizeof(IMAGE_DOS_HEADER), fp);
 	if (myDosHeader.e_magic!=0x5A4D)
@@ -29,11 +29,11 @@ int main(int argc, char* argv[])
 		fclose(fp);
 		return 1;
 	}
-	printf("MZ±êÊ¶(WORD)               e_magic:             %04X\n", myDosHeader.e_magic);
-	printf("PEÆ«ÒÆÁ¿(DOWRD)            e_lfaner:            %08X\n\n", myDosHeader.e_lfanew);
+	printf("MZï¿½ï¿½Ê¶(WORD)               e_magic:             %04X\n", myDosHeader.e_magic);
+	printf("PEÆ«ï¿½ï¿½ï¿½ï¿½(DOWRD)            e_lfaner:            %08X\n\n", myDosHeader.e_lfanew);
 	e_lfanew = myDosHeader.e_lfanew;
 
-	//NTÍ·²¿·Ö
+	//NTÍ·ï¿½ï¿½ï¿½ï¿½
 	printf("====================IMAGE_NT_HEADER====================\n");
 	fseek(fp, e_lfanew, SEEK_SET);
 	fread(&myNTHeader, 1, sizeof(IMAGE_NT_HEADERS), fp);
@@ -43,59 +43,59 @@ int main(int argc, char* argv[])
 		fclose(fp);
 		exit(0);
 	}
-    printf("PE±êÊ¶(DWORD)              Signature:           %08X\n\n",myNTHeader.Signature);
+    printf("PEï¿½ï¿½Ê¶(DWORD)              Signature:           %08X\n\n",myNTHeader.Signature);
 
-    //FILEÍ·²¿·Ö
+    //FILEÍ·ï¿½ï¿½ï¿½ï¿½
     printf("===================IMAGE_FILE_HEADER====================\n");
-    printf("ÔËÐÐÆ½Ì¨(WORD)             Machine:             %04X\n", myNTHeader.FileHeader.Machine);
-    printf("½ÚµÄÊýÁ¿(WORD)             NumberOfSection:     %d\n", myNTHeader.FileHeader.NumberOfSections);
-    printf("ÎÄ¼þÊôÐÔ(WORD)             Characteristics:     %04X\n\n", myNTHeader.FileHeader.Characteristics);
+    printf("ï¿½ï¿½ï¿½ï¿½Æ½Ì¨(WORD)             Machine:             %04X\n", myNTHeader.FileHeader.Machine);
+    printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½(WORD)             NumberOfSection:     %d\n", myNTHeader.FileHeader.NumberOfSections);
+    printf("ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½(WORD)             Characteristics:     %04X\n\n", myNTHeader.FileHeader.Characteristics);
 
-    //OPTIONALÍ·²¿·Ö
+    //OPTIONALÍ·ï¿½ï¿½ï¿½ï¿½
 	printf("==================IMAGE_OPTION_HEADER===================\n");
-	printf("³ÌÐòÖ´ÐÐÈë¿Ú(DWORD)        AddressOfEntryPoint: %08X\n", myNTHeader.OptionalHeader.AddressOfEntryPoint);
-    printf("´úÂë½ÚÆðÊ¼µã(DWORD)        BaseOfCode:          %08X\n", myNTHeader.OptionalHeader.BaseOfCode);
-	printf("Êý¾Ý½ÚÆðÊ¼µã(DWORD)        BaseOfData:          %08X\n", myNTHeader.OptionalHeader.BaseOfData);
-    printf("½¨Òé×°Èë»ùµØÖ·(DWORD)      ImageBase:           %08X\n", myNTHeader.OptionalHeader.ImageBase);
-    printf("Êý¾ÝÄ¿Â¼ÊýÁ¿(DWORD)        NumberOfRvaAndSizes: %d\n\n", myNTHeader.OptionalHeader.NumberOfRvaAndSizes);
+	printf("ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)        AddressOfEntryPoint: %08X\n", myNTHeader.OptionalHeader.AddressOfEntryPoint);
+    printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½(DWORD)        BaseOfCode:          %08X\n", myNTHeader.OptionalHeader.BaseOfCode);
+	printf("ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½(DWORD)        BaseOfData:          %08X\n", myNTHeader.OptionalHeader.BaseOfData);
+    printf("ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½ï¿½Ö·(DWORD)      ImageBase:           %08X\n", myNTHeader.OptionalHeader.ImageBase);
+    printf("ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½ï¿½(DWORD)        NumberOfRvaAndSizes: %d\n\n", myNTHeader.OptionalHeader.NumberOfRvaAndSizes);
 
-    //Êý¾ÝÄ¿Â¼
+    //ï¿½ï¿½ï¿½ï¿½Ä¿Â¼
     printf("==================IMAGE_DATA_DIRECTORY==================\n");
     for(i = 0; i < myNTHeader.OptionalHeader.NumberOfRvaAndSizes; ++i){
         if(myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress != 0){
-            printf("Êý¾Ý¿é%d:\n", i);
-            printf("Êý¾ÝÆðÊ¼µã(DWORD)          VirtualAddress:      %08X\n",myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress);
-            printf("Êý¾Ý¿é³¤¶È(DWORD)          Size:                %08X\n\n",myNTHeader.OptionalHeader.DataDirectory[i].Size);
+            printf("ï¿½ï¿½ï¿½Ý¿ï¿½%d:\n", i);
+            printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½(DWORD)          VirtualAddress:      %08X\n",myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress);
+            printf("ï¿½ï¿½ï¿½Ý¿é³¤ï¿½ï¿½(DWORD)          Size:                %08X\n\n",myNTHeader.OptionalHeader.DataDirectory[i].Size);
         }
     }
 
-    //½Ú±íÄ¿Â¼
+    //ï¿½Ú±ï¿½Ä¿Â¼
 	printf("==================IMAGE_SECTION_HEADER==================\n");
     pmySectionHeader = (IMAGE_SECTION_HEADER*)malloc(myNTHeader.FileHeader.NumberOfSections * sizeof(IMAGE_SECTION_HEADER));
     fseek(fp, (e_lfanew + sizeof(IMAGE_NT_HEADERS)), SEEK_SET);
     fread(pmySectionHeader, sizeof(IMAGE_SECTION_HEADER), myNTHeader.FileHeader.NumberOfSections, fp);
-    printf("½ÚµÄÊôÐÔ²Î¿¼:\n");
-    printf("    00000020h           °üº¬´úÂë\n");
-    printf("    00000040h           °üº¬ÒÑ³õÊ¼»¯µÄÊý¾Ý£¬Èç.const\n");
-    printf("    00000080h           °üº¬Î´³õÊ¼»¯µÄÊý¾Ý£¬Èç.data?\n");
-    printf("    02000000h           Êý¾ÝÔÚ½ø³Ì¿ªÊ¼ÒÔºó±»¶ªÆú£¬Èç.reloc\n");
-    printf("    04000000h           ½ÚÖÐÊý¾Ý²»¾­¹ý»º´æ\n");
-    printf("    08000000h           ½ÚÖÐÊý¾Ý²»»á±»½»»»µ½Ó²ÅÌ\n");
-    printf("    10000000h           Êý¾Ý½«±»²»Í¬½ø³Ì¹²Ïí\n");
-    printf("    20000000h           ¿ÉÖ´ÐÐ\n");
-    printf("    40000000h           ¿É¶Á\n");
-    printf("    80000000h           ¿ÉÐ´\n\n");
+    printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½Ô²Î¿ï¿½:\n");
+    printf("    00000020h           ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+    printf("    00000040h           ï¿½ï¿½ï¿½ï¿½ï¿½Ñ³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½.const\n");
+    printf("    00000080h           ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½.data?\n");
+    printf("    02000000h           ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½Ì¿ï¿½Ê¼ï¿½Ôºó±»¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.reloc\n");
+    printf("    04000000h           ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+    printf("    08000000h           ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½á±»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó²ï¿½ï¿½\n");
+    printf("    10000000h           ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½Ì¹ï¿½ï¿½ï¿½\n");
+    printf("    20000000h           ï¿½ï¿½Ö´ï¿½ï¿½\n");
+    printf("    40000000h           ï¿½É¶ï¿½\n");
+    printf("    80000000h           ï¿½ï¿½Ð´\n\n");
 
-        printf("ÄÚ´æÖÐ½ÚµÄ¶ÔÆëÁ£¶È(DWORD)  SectionAlignment:    %08X\n",myNTHeader.OptionalHeader.SectionAlignment);
-        printf("ÎÄ¼þÖÐ½ÚµÄ¶ÔÆëÁ£¶È(DWORD)  FileAlignment:       %08X\n\n",myNTHeader.OptionalHeader.FileAlignment);
+        printf("ï¿½Ú´ï¿½ï¿½Ð½ÚµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)  SectionAlignment:    %08X\n",myNTHeader.OptionalHeader.SectionAlignment);
+        printf("ï¿½Ä¼ï¿½ï¿½Ð½ÚµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)  FileAlignment:       %08X\n\n",myNTHeader.OptionalHeader.FileAlignment);
 
     for(i = 0; i < myNTHeader.FileHeader.NumberOfSections; i++,pmySectionHeader++){
-        printf("½ÚÇø%d:\n", i);
-        printf("½ÚµÄÃû³Æ(BYTE)             NAME:                %s\n",pmySectionHeader->Name);
-        printf("Î´¶ÔÆëÇ°ÕæÊµ³¤¶È(DWORD)    VirtualSize:         %08X\n",pmySectionHeader->Misc.VirtualSize);
-        printf("ÎÄ¼þÖÐ¶ÔÆëºó³¤¶È(DWORD)    SizeOfRawData:       %08X\n",pmySectionHeader->SizeOfRawData);
-        printf("ÔÚÎÄ¼þÖÐµÄÆ«ÒÆ(DWORD)      PointerToRawData:    %08X\n",pmySectionHeader->PointerToRawData);
-        printf("½ÚµÄÊôÐÔ(DWORD)            Characteristics:     %08X\n\n",pmySectionHeader->Characteristics);
+        printf("ï¿½ï¿½ï¿½ï¿½%d:\n", i);
+        printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½(BYTE)             NAME:                %s\n",pmySectionHeader->Name);
+        printf("Î´ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½(DWORD)    VirtualSize:         %08X\n",pmySectionHeader->Misc.VirtualSize);
+        printf("ï¿½Ä¼ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ó³¤¶ï¿½(DWORD)    SizeOfRawData:       %08X\n",pmySectionHeader->SizeOfRawData);
+        printf("ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ðµï¿½Æ«ï¿½ï¿½(DWORD)      PointerToRawData:    %08X\n",pmySectionHeader->PointerToRawData);
+        printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)            Characteristics:     %08X\n\n",pmySectionHeader->Characteristics);
     }
 
 	fclose(fp);

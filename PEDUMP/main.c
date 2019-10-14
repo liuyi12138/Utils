@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
     int ascii[16];
     unsigned char buff[16];
 
-    FILE *fpr = fopen(argv[1], "r");
+    FILE *fpr = fopen(argv[1], "rb");
     FILE *fpw = fopen("report.txt","w");
 
     if(fpr == NULL || fpw == NULL)
@@ -23,6 +23,7 @@ int main(int argc, char* argv[])
     //while(fgets(buff,sizeof(buff),fpr) != NULL){
     //此处应将fgets修正为fread，因为fgets每次读取完后会在字符串后补/0导致输出的文件出错，在后续PEINFO中发现了这个问题
     while(fread(buff,1,sizeof(buff),fpr) != NULL){
+        fread(buff,1,sizeof(buff),fpr);
         printf("%08x    ", address);
         fprintf(fpw, "%08x    ", address);
         for(int i = 0; i < 16; ++i){
