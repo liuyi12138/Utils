@@ -7,12 +7,17 @@ IMAGE_NT_HEADERS myNTHeader;
 IMAGE_OPTIONAL_HEADER myOptionHeader;
 IMAGE_SECTION_HEADER* pmySectionHeader;
 LONG e_lfanew;
+IMAGE_IMPORT_DESCRIPTOR* pmyImportDes;
 
-int main(int argc, char* argv[])
+void getValueByOffset(FILE* fp,DWORD offset, char* value, int size);
+
+//int main(int argc, char* argv[])
+int main()
 {
     int i = 0;
-    printf("File Name: %s\n",argv[1]);
-    FILE *fp = fopen(argv[1], "rb");
+    //printf("File Name: %s\n",argv[1]);
+    FILE *fp = fopen("W:\\picGo\\Uninstall PicGo.exe", "rb");
+    //FILE *fp = fopen("D:\\helloDian.exe", "rb");
     if(fp == NULL)
     {
         printf("failed to open \n");
@@ -20,7 +25,7 @@ int main(int argc, char* argv[])
     }
 
 
-    //DOSÍ·ï¿½ï¿½ï¿½ï¿½
+    //DOSÍ·²¿·Ö
     printf("====================IMAGE_DOS_HEADER====================\n");
     fread(&myDosHeader,1 ,sizeof(IMAGE_DOS_HEADER), fp);
 	if (myDosHeader.e_magic!=0x5A4D)
@@ -29,11 +34,11 @@ int main(int argc, char* argv[])
 		fclose(fp);
 		return 1;
 	}
-	printf("MZï¿½ï¿½Ê¶(WORD)               e_magic:             %04X\n", myDosHeader.e_magic);
-	printf("PEÆ«ï¿½ï¿½ï¿½ï¿½(DOWRD)            e_lfaner:            %08X\n\n", myDosHeader.e_lfanew);
+	printf("MZ±êÊ¶(WORD)               e_magic:             %04X\n", myDosHeader.e_magic);
+	printf("PEÆ«ÒÆÁ¿(DOWRD)            e_lfaner:            %08X\n\n", myDosHeader.e_lfanew);
 	e_lfanew = myDosHeader.e_lfanew;
 
-	//NTÍ·ï¿½ï¿½ï¿½ï¿½
+	//NTÍ·²¿·Ö
 	printf("====================IMAGE_NT_HEADER====================\n");
 	fseek(fp, e_lfanew, SEEK_SET);
 	fread(&myNTHeader, 1, sizeof(IMAGE_NT_HEADERS), fp);
@@ -43,61 +48,147 @@ int main(int argc, char* argv[])
 		fclose(fp);
 		exit(0);
 	}
-    printf("PEï¿½ï¿½Ê¶(DWORD)              Signature:           %08X\n\n",myNTHeader.Signature);
+    printf("PE±êÊ¶(DWORD)              Signature:           %08X\n\n",myNTHeader.Signature);
 
-    //FILEÍ·ï¿½ï¿½ï¿½ï¿½
+    //FILEÍ·²¿·Ö
     printf("===================IMAGE_FILE_HEADER====================\n");
-    printf("ï¿½ï¿½ï¿½ï¿½Æ½Ì¨(WORD)             Machine:             %04X\n", myNTHeader.FileHeader.Machine);
-    printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½(WORD)             NumberOfSection:     %d\n", myNTHeader.FileHeader.NumberOfSections);
-    printf("ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½(WORD)             Characteristics:     %04X\n\n", myNTHeader.FileHeader.Characteristics);
+    printf("ÔËÐÐÆ½Ì¨(WORD)             Machine:             %04X\n", myNTHeader.FileHeader.Machine);
+    printf("½ÚµÄÊýÁ¿(WORD)             NumberOfSection:     %d\n", myNTHeader.FileHeader.NumberOfSections);
+    printf("ÎÄ¼þÊôÐÔ(WORD)             Characteristics:     %04X\n\n", myNTHeader.FileHeader.Characteristics);
 
-    //OPTIONALÍ·ï¿½ï¿½ï¿½ï¿½
+    //OPTIONALÍ·²¿·Ö
 	printf("==================IMAGE_OPTION_HEADER===================\n");
-	printf("ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)        AddressOfEntryPoint: %08X\n", myNTHeader.OptionalHeader.AddressOfEntryPoint);
-    printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½(DWORD)        BaseOfCode:          %08X\n", myNTHeader.OptionalHeader.BaseOfCode);
-	printf("ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½(DWORD)        BaseOfData:          %08X\n", myNTHeader.OptionalHeader.BaseOfData);
-    printf("ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½ï¿½Ö·(DWORD)      ImageBase:           %08X\n", myNTHeader.OptionalHeader.ImageBase);
-    printf("ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½ï¿½(DWORD)        NumberOfRvaAndSizes: %d\n\n", myNTHeader.OptionalHeader.NumberOfRvaAndSizes);
+	printf("³ÌÐòÖ´ÐÐÈë¿Ú(DWORD)        AddressOfEntryPoint: %08X\n", myNTHeader.OptionalHeader.AddressOfEntryPoint);
+    printf("´úÂë½ÚÆðÊ¼µã(DWORD)        BaseOfCode:          %08X\n", myNTHeader.OptionalHeader.BaseOfCode);
+	printf("Êý¾Ý½ÚÆðÊ¼µã(DWORD)        BaseOfData:          %08X\n", myNTHeader.OptionalHeader.BaseOfData);
+    printf("½¨Òé×°Èë»ùµØÖ·(DWORD)      ImageBase:           %08X\n", myNTHeader.OptionalHeader.ImageBase);
+    printf("Êý¾ÝÄ¿Â¼ÊýÁ¿(DWORD)        NumberOfRvaAndSizes: %d\n\n", myNTHeader.OptionalHeader.NumberOfRvaAndSizes);
 
-    //ï¿½ï¿½ï¿½ï¿½Ä¿Â¼
+    //Êý¾ÝÄ¿Â¼
+    DWORD IAT_RVA = 0;                      //IATµÄRVA
+    DWORD ImportDir_RVA = 0;                //µ¼Èë±íµÄRVA
+    DWORD IAT_offset = 0;                   //ÓÉIATµÄRVA¼ÆËã³öµÄÎÄ¼þÆ«ÒÆµØÖ·
+    DWORD ImportDir_offset = 0;             //ÓÉµ¼Èë±íµÄRVA¼ÆËã³öµÄÎÄ¼þÆ«ÒÆµØÖ·
+    DWORD IAT_Section_RVA = 0;              //IATËùÔÚµÄ½ÚµÄRVA
+    DWORD ImportDir_Section_RVA = 0;        //µ¼Èë±íËùÔÚµÄ½ÚµÄRVA
     printf("==================IMAGE_DATA_DIRECTORY==================\n");
+    //Êý¾ÝÄ¿Â¼
     for(i = 0; i < myNTHeader.OptionalHeader.NumberOfRvaAndSizes; ++i){
         if(myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress != 0){
-            printf("ï¿½ï¿½ï¿½Ý¿ï¿½%d:\n", i);
-            printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½(DWORD)          VirtualAddress:      %08X\n",myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress);
-            printf("ï¿½ï¿½ï¿½Ý¿é³¤ï¿½ï¿½(DWORD)          Size:                %08X\n\n",myNTHeader.OptionalHeader.DataDirectory[i].Size);
+            if(i == 1){
+                ImportDir_RVA = myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress;
+            }
+            if(i == 12){
+                IAT_RVA = myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress;
+            }
+            printf("Êý¾Ý¿é%d:\n", i+1);
+            printf("Êý¾ÝÆðÊ¼µã(DWORD)          VirtualAddress:      %08X\n",myNTHeader.OptionalHeader.DataDirectory[i].VirtualAddress);
+            printf("Êý¾Ý¿é³¤¶È(DWORD)          Size:                %08X\n\n",myNTHeader.OptionalHeader.DataDirectory[i].Size);
         }
     }
 
-    //ï¿½Ú±ï¿½Ä¿Â¼
+    //½Ú±íÄ¿Â¼
 	printf("==================IMAGE_SECTION_HEADER==================\n");
     pmySectionHeader = (IMAGE_SECTION_HEADER*)malloc(myNTHeader.FileHeader.NumberOfSections * sizeof(IMAGE_SECTION_HEADER));
     fseek(fp, (e_lfanew + sizeof(IMAGE_NT_HEADERS)), SEEK_SET);
     fread(pmySectionHeader, sizeof(IMAGE_SECTION_HEADER), myNTHeader.FileHeader.NumberOfSections, fp);
-    printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½Ô²Î¿ï¿½:\n");
-    printf("    00000020h           ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
-    printf("    00000040h           ï¿½ï¿½ï¿½ï¿½ï¿½Ñ³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½.const\n");
-    printf("    00000080h           ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½.data?\n");
-    printf("    02000000h           ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½Ì¿ï¿½Ê¼ï¿½Ôºó±»¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.reloc\n");
-    printf("    04000000h           ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
-    printf("    08000000h           ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½á±»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó²ï¿½ï¿½\n");
-    printf("    10000000h           ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½Ì¹ï¿½ï¿½ï¿½\n");
-    printf("    20000000h           ï¿½ï¿½Ö´ï¿½ï¿½\n");
-    printf("    40000000h           ï¿½É¶ï¿½\n");
-    printf("    80000000h           ï¿½ï¿½Ð´\n\n");
+    printf("½ÚµÄÊôÐÔ²Î¿¼:\n");
+    printf("    00000020h           °üº¬´úÂë\n");
+    printf("    00000040h           °üº¬ÒÑ³õÊ¼»¯µÄÊý¾Ý£¬Èç.const\n");
+    printf("    00000080h           °üº¬Î´³õÊ¼»¯µÄÊý¾Ý£¬Èç.data?\n");
+    printf("    02000000h           Êý¾ÝÔÚ½ø³Ì¿ªÊ¼ÒÔºó±»¶ªÆú£¬Èç.reloc\n");
+    printf("    04000000h           ½ÚÖÐÊý¾Ý²»¾­¹ý»º´æ\n");
+    printf("    08000000h           ½ÚÖÐÊý¾Ý²»»á±»½»»»µ½Ó²ÅÌ\n");
+    printf("    10000000h           Êý¾Ý½«±»²»Í¬½ø³Ì¹²Ïí\n");
+    printf("    20000000h           ¿ÉÖ´ÐÐ\n");
+    printf("    40000000h           ¿É¶Á\n");
+    printf("    80000000h           ¿ÉÐ´\n\n");
 
-        printf("ï¿½Ú´ï¿½ï¿½Ð½ÚµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)  SectionAlignment:    %08X\n",myNTHeader.OptionalHeader.SectionAlignment);
-        printf("ï¿½Ä¼ï¿½ï¿½Ð½ÚµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)  FileAlignment:       %08X\n\n",myNTHeader.OptionalHeader.FileAlignment);
+    printf("ÄÚ´æÖÐ½ÚµÄ¶ÔÆëÁ£¶È(DWORD)  SectionAlignment:    %08X\n",myNTHeader.OptionalHeader.SectionAlignment);
+    printf("ÎÄ¼þÖÐ½ÚµÄ¶ÔÆëÁ£¶È(DWORD)  FileAlignment:       %08X\n\n",myNTHeader.OptionalHeader.FileAlignment);
 
     for(i = 0; i < myNTHeader.FileHeader.NumberOfSections; i++,pmySectionHeader++){
-        printf("ï¿½ï¿½ï¿½ï¿½%d:\n", i);
-        printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½(BYTE)             NAME:                %s\n",pmySectionHeader->Name);
-        printf("Î´ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½(DWORD)    VirtualSize:         %08X\n",pmySectionHeader->Misc.VirtualSize);
-        printf("ï¿½Ä¼ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ó³¤¶ï¿½(DWORD)    SizeOfRawData:       %08X\n",pmySectionHeader->SizeOfRawData);
-        printf("ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ðµï¿½Æ«ï¿½ï¿½(DWORD)      PointerToRawData:    %08X\n",pmySectionHeader->PointerToRawData);
-        printf("ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½(DWORD)            Characteristics:     %08X\n\n",pmySectionHeader->Characteristics);
+        //»ñÈ¡IATºÍµ¼Èë±íËùÔÚµÄ½ÚµÄÐÅÏ¢
+        if(ImportDir_RVA != 0 && IAT_RVA != 0){
+            if(pmySectionHeader->VirtualAddress <= IAT_RVA && pmySectionHeader->VirtualAddress + pmySectionHeader->Misc.VirtualSize > IAT_RVA){
+                IAT_offset = pmySectionHeader->PointerToRawData + (IAT_RVA - pmySectionHeader->VirtualAddress);
+                IAT_Section_RVA = pmySectionHeader->VirtualAddress;
+            }
+            if(pmySectionHeader->VirtualAddress <= ImportDir_RVA && pmySectionHeader->VirtualAddress + pmySectionHeader->Misc.VirtualSize > ImportDir_RVA){
+                ImportDir_offset = pmySectionHeader->PointerToRawData + (ImportDir_RVA - pmySectionHeader->VirtualAddress);
+                ImportDir_Section_RVA = pmySectionHeader->VirtualAddress;
+            }
+        }
+        printf("½ÚÇø%d:\n", i);
+        printf("½ÚµÄÃû³Æ(BYTE)             NAME:                %s\n",pmySectionHeader->Name);
+        printf("Î´¶ÔÆëÇ°ÕæÊµ³¤¶È(DWORD)    VirtualSize:         %08X\n",pmySectionHeader->Misc.VirtualSize);
+        printf("½ÚµÄRVA(DWORD)             VirtualAddress:      %08X\n",pmySectionHeader->VirtualAddress);
+        printf("ÎÄ¼þÖÐ¶ÔÆëºó³¤¶È(DWORD)    SizeOfRawData:       %08X\n",pmySectionHeader->SizeOfRawData);
+        printf("ÔÚÎÄ¼þÖÐµÄÆ«ÒÆ(DWORD)      PointerToRawData:    %08X\n",pmySectionHeader->PointerToRawData);
+        printf("½ÚµÄÊôÐÔ(DWORD)            Characteristics:     %08X\n\n",pmySectionHeader->Characteristics);
+    }
+
+    printf("========================================================\n\n");
+    if(ImportDir_offset != 0){
+        int count = 0;      //µ¼Èë±íÖÐ¿âµÄÊýÁ¿¼ÆÊý
+        int count1 = 0;     //Ä³µ¼Èë¿âÖÐº¯ÊýÊýÁ¿¼ÆÊý
+        while(1){
+            pmyImportDes = (IMAGE_IMPORT_DESCRIPTOR*)malloc(sizeof(IMAGE_IMPORT_DESCRIPTOR));
+            getValueByOffset(fp, ImportDir_offset + sizeof(IMAGE_IMPORT_DESCRIPTOR) * count, pmyImportDes, sizeof(IMAGE_IMPORT_DESCRIPTOR));
+            count++;
+            if(pmyImportDes->Name == 0)
+                break;
+            else{
+                //»ñÈ¡µ¼Èë¿âÃû
+                DWORD name_offset = (pmyImportDes->Name - IAT_Section_RVA) + IAT_offset;
+                char name[32];
+                getValueByOffset(fp, name_offset, name, 32);
+                printf("µ¼Èë¿â: %s\n", name);
+                printf("-------------------------------\n");
+                printf("OriginalFirstThunk   %08X\n", pmyImportDes->OriginalFirstThunk);
+                printf("TimeDateStamp        %08X\n", pmyImportDes->TimeDateStamp);
+                printf("ForwarderChain       %08X\n", pmyImportDes->ForwarderChain);
+                printf("NameRva              %08X\n", pmyImportDes->Name);
+                printf("NameOffest           %08X\n", name_offset);
+                printf("FirstThunk           %08X\n", pmyImportDes->FirstThunk);
+                //¶¨Î»µ½IMAGE_THUNK_DATA
+                if(pmyImportDes->OriginalFirstThunk < 0x10000000){
+                    count1 = 0;
+                    printf("-------------------------------\n");
+                    //Ñ­»·»ñÈ¡µ¥¸öIMAGE_THUNK_DATA
+                    while(1){
+                        DWORD* pmyThunkData;
+                        pmyThunkData = (DWORD*)malloc(sizeof(DWORD));
+                        DWORD thunk_offset = (pmyImportDes->OriginalFirstThunk - IAT_Section_RVA) + IAT_offset;
+                        getValueByOffset(fp, thunk_offset + sizeof(DWORD) * count1, pmyThunkData, sizeof(DWORD));
+                        count1++;
+                        if((*pmyThunkData) == 0)
+                            break;
+                        else{
+                            //»ñÈ¡Hint_Name_offset½á¹¹
+                            DWORD Hint_Name_offset = (*pmyThunkData - IAT_Section_RVA) + IAT_offset;
+                            IMAGE_IMPORT_BY_NAME* pmyImportByName;
+                            pmyImportByName = (IMAGE_IMPORT_BY_NAME*)malloc(320);
+                            getValueByOffset(fp, Hint_Name_offset, pmyImportByName, 320);
+                            printf("%08X       %s\n", pmyImportByName->Hint,pmyImportByName->Name);
+                        }
+                    }
+                    printf("\n");
+                }
+            }
+            free(pmyImportDes);
+        }
+
     }
 
 	fclose(fp);
     return 0;
+}
+
+//Í¨¹ýÔÚÎÄ¼þÖÐµÄÆ«ÒÆ»ñÈ¡Êý¾Ý
+void getValueByOffset(FILE* fp,DWORD offset, char* value, int size){
+    long int position = ftell(fp);
+    fseek(fp, offset,SEEK_SET);
+    fread(value, sizeof(char),size,fp);
+    fseek(fp, position,SEEK_SET);
 }
