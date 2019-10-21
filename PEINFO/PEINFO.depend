@@ -4,3 +4,8 @@
 	<stdlib.h>
 	<string.h>
 
+1571619653 source:l:\github\utils\peinfo\main.c
+	<stdio.h>
+	<stdlib.h>
+	<Windows.h>
+

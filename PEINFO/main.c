@@ -11,13 +11,11 @@ IMAGE_IMPORT_DESCRIPTOR* pmyImportDes;
 
 void getValueByOffset(FILE* fp,DWORD offset, char* value, int size);
 
-//int main(int argc, char* argv[])
-int main()
+int main(int argc, char* argv[])
 {
     int i = 0;
-    //printf("File Name: %s\n",argv[1]);
-    FILE *fp = fopen("W:\\picGo\\Uninstall PicGo.exe", "rb");
-    //FILE *fp = fopen("D:\\helloDian.exe", "rb");
+    printf("File Name: %s\n",argv[1]);
+    FILE *fp = fopen(argv[1], "rb");
     if(fp == NULL)
     {
         printf("failed to open \n");
@@ -70,6 +68,7 @@ int main()
     DWORD IAT_offset = 0;                   //由IAT的RVA计算出的文件偏移地址
     DWORD ImportDir_offset = 0;             //由导入表的RVA计算出的文件偏移地址
     DWORD IAT_Section_RVA = 0;              //IAT所在的节的RVA
+    DWORD IAT_Section_offset = 0;           //IAT所在的节的文件偏移
     DWORD ImportDir_Section_RVA = 0;        //导入表所在的节的RVA
     printf("==================IMAGE_DATA_DIRECTORY==================\n");
     //数据目录
@@ -113,6 +112,7 @@ int main()
             if(pmySectionHeader->VirtualAddress <= IAT_RVA && pmySectionHeader->VirtualAddress + pmySectionHeader->Misc.VirtualSize > IAT_RVA){
                 IAT_offset = pmySectionHeader->PointerToRawData + (IAT_RVA - pmySectionHeader->VirtualAddress);
                 IAT_Section_RVA = pmySectionHeader->VirtualAddress;
+                IAT_Section_offset = pmySectionHeader->PointerToRawData;
             }
             if(pmySectionHeader->VirtualAddress <= ImportDir_RVA && pmySectionHeader->VirtualAddress + pmySectionHeader->Misc.VirtualSize > ImportDir_RVA){
                 ImportDir_offset = pmySectionHeader->PointerToRawData + (ImportDir_RVA - pmySectionHeader->VirtualAddress);
@@ -140,7 +140,7 @@ int main()
                 break;
             else{
                 //获取导入库名
-                DWORD name_offset = (pmyImportDes->Name - IAT_Section_RVA) + IAT_offset;
+                DWORD name_offset = (pmyImportDes->Name - IAT_Section_RVA) + IAT_Section_offset;
                 char name[32];
                 getValueByOffset(fp, name_offset, name, 32);
                 printf("导入库: %s\n", name);
@@ -159,14 +159,14 @@ int main()
                     while(1){
                         DWORD* pmyThunkData;
                         pmyThunkData = (DWORD*)malloc(sizeof(DWORD));
-                        DWORD thunk_offset = (pmyImportDes->OriginalFirstThunk - IAT_Section_RVA) + IAT_offset;
+                        DWORD thunk_offset = (pmyImportDes->OriginalFirstThunk - IAT_Section_RVA) + IAT_Section_offset;
                         getValueByOffset(fp, thunk_offset + sizeof(DWORD) * count1, pmyThunkData, sizeof(DWORD));
                         count1++;
                         if((*pmyThunkData) == 0)
                             break;
                         else{
                             //获取Hint_Name_offset结构
-                            DWORD Hint_Name_offset = (*pmyThunkData - IAT_Section_RVA) + IAT_offset;
+                            DWORD Hint_Name_offset = (*pmyThunkData - IAT_Section_RVA) + IAT_Section_offset;
                             IMAGE_IMPORT_BY_NAME* pmyImportByName;
                             pmyImportByName = (IMAGE_IMPORT_BY_NAME*)malloc(320);
                             getValueByOffset(fp, Hint_Name_offset, pmyImportByName, 320);
